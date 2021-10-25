@@ -1,1 +1,1 @@
-# M012-Project2-Group5
+# Group5 - Multi-Armed Bandit Problem Project
