@@ -4,46 +4,92 @@ class cafeteria():
         self.name = name
         self.mean = mean
         self.std = std
+        self.happiness = 0
+        self.visitedTimes = 1
 
-    def happiness(self):
-        return random.normalvariate(self.mean,self.std)
+    #adds the values of happiness to that specific cafeteria when visited
+    def generateHappiness(self):
+        randomGenerated = random.normalvariate(self.mean,self.std)
+        self.happiness += randomGenerated
+        self.visitedTimes += 1
+
+    #helper function that returns the happiness level of the cafeteria
+    def getHappiness(self):
+        return self.happiness
+
+    #compares the 3 cafeteria and returns the cafeteria with the highest happiness
+    #level
+    def compareHappiness(self, x, y):
+        bestCafe = self
+        if (bestCafe.happiness/(bestCafe.visitedTimes) < x.happiness/(x.visitedTimes)):
+            bestCafe = x
+        if (bestCafe.happiness/(bestCafe.visitedTimes) < y.happiness/(y.visitedTimes)):
+            bestCafe = y
+        return bestCafe
+
 
 # instantiate cafeteria objects
-c1_mean, c1_dev = 5, 3
-c2_mean, c2_dev = 8, 5
-c3_mean, c3_dev = 10, 7
+c1_mean, c1_dev = 9, 3
+c2_mean, c2_dev = 7, 5
+c3_mean, c3_dev = 11, 7
 
-c1 = cafeteria('c1', c1_mean, c1_dev)
-c2 = cafeteria('c1', c2_mean, c2_dev)
-c3 = cafeteria('c1', c3_mean, c3_dev)
+#return the total happiness for exploreOnly for t trial(s)
+def exploreOnly(t):
+    # Instantiate cafeteria objects
+    c1 = cafeteria('c1', c1_mean, c1_dev)
+    c2 = cafeteria('c2', c2_mean, c2_dev)
+    c3 = cafeteria('c3', c3_mean, c3_dev)
+    for trial in range (t):
+        for days in range(100):
+            c1.generateHappiness()
+            c2.generateHappiness()
+            c3.generateHappiness()
+    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
 
 #return the total happiness for exploitOnly for t trial(s)
 def exploitOnly(t):
-    totalHappiness = 0
+    #Instantiate cafeteria objects
+    c1 = cafeteria('c1', c1_mean, c1_dev)
+    c2 = cafeteria('c2', c2_mean, c2_dev)
+    c3 = cafeteria('c3', c3_mean, c3_dev)
     ### t trials
     for x in range (t):
-        bestCafe = c1
-        valuec1 = c1.happiness()
-        valuec2 = c2.happiness()
-        valuec3 = c3.happiness()
-        totalHappiness += (valuec1 + valuec2 + valuec3)
-        if(valuec2 > valuec1):
-            bestCafe = c2
-        if(valuec3 > valuec1):
-            bestCafe = c3
-        for days in range (297):
-            totalHappiness += bestCafe.happiness()
-    return totalHappiness/t
+        c1.generateHappiness()
+        #print(c1.getHappiness())
+        c2.generateHappiness()
+        #print(c2.getHappiness())
+        c3.generateHappiness()
+        #print(c3.getHappiness())
+        bestCafe = c1.compareHappiness(c2,c3)
+        #print(bestCafe.name)
+        for days in range(297):
+            bestCafe.generateHappiness()
+    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
 
-def exploreOnly(t):
-    #TODO implement the exploreOnly algorithm
-    return 0
-
+#return the total happiness for egreedy for t trial(s)
 def eGreedy(t,e):
-    #TODO implement the eGreedy algorithm
-    return 0
+    # Instantiate cafeteria objects
+    c1 = cafeteria('c1', c1_mean, c1_dev)
+    c2 = cafeteria('c2', c2_mean, c2_dev)
+    c3 = cafeteria('c3', c3_mean, c3_dev)
+    cafeList = [c1,c2,c3]
+    for trials in range (t):
+        for days in range (300):
+            r = (int)(random.random()*101)
+            if r < e:
+                randCafe = cafeList[(int)(random.random()*3)]
+                randCafe.generateHappiness()
+            else:
+                bestCafe = c1.compareHappiness(c2,c3)
+                #print(c1.getHappiness())
+                #print(c2.getHappiness())
+                #print(c3.getHappiness())
+                #print(bestCafe.name)
+                bestCafe.generateHappiness()
+    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
 
 def simulate(t,ePercent):
+    #e set the e value
     e = ePercent
 
     # expected Values
@@ -53,10 +99,12 @@ def simulate(t,ePercent):
     egreedyHappiness = (int)(c3_mean * ((100 - e) / 100) * 300 + c3_mean * ((e / 100) * 300) / 3 + c2_mean * (
                 (e / 100) * 300) / 3 + c1_mean * ((e / 100) * 300) / 3)
 
+    #runs the functions
     exploitResult = exploitOnly(t)
-    #print(exploitResult)
     exploreResult = exploreOnly(t)
     greedyResult = eGreedy(t,e)
+
+    #prints out out the neccessary information to the console
     print('----------------------------------------')
     print("Optimum Happiness: " + (str)(optimumHappiness))
     print('----------------------------------------')
@@ -76,7 +124,8 @@ def simulate(t,ePercent):
     print("Average Total Happiness: " + (str)(greedyResult))
     print("Average Total Regret: " + (str)(optimumHappiness - greedyResult))
 
-simulate(1000,12)
+#simulate(p1,p2) runs the simulation p1 number of times with the e value of p2
+simulate(10000,12)
 
 
 
