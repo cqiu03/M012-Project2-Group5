@@ -1,5 +1,6 @@
 import random
 class cafeteria():
+    #set up instance variables for the cafeteria cclass
     def __init__(self, name, mean, std):
         self.name = name
         self.mean = mean
@@ -17,7 +18,7 @@ class cafeteria():
     def getHappiness(self):
         return self.happiness
 
-    #compares the 3 cafeteria and returns the cafeteria with the highest happiness
+    #compares the 3 cafeteria and returns the cafeteria with the highest average happiness
     #level
     def compareHappiness(self, x, y):
         bestCafe = self
@@ -28,65 +29,78 @@ class cafeteria():
         return bestCafe
 
 
-# instantiate cafeteria objects
+# define the basic characteristic of each cafeteria
+# c1 should always be the cafeteria with the lowest mean
+# c3 should always be the cafeteria with the highest mean
 c1_mean, c1_dev = 9, 3
 c2_mean, c2_dev = 7, 5
 c3_mean, c3_dev = 11, 7
 
 #return the total happiness for exploreOnly for t trial(s)
 def exploreOnly(t):
-    # Instantiate cafeteria objects
-    c1 = cafeteria('c1', c1_mean, c1_dev)
-    c2 = cafeteria('c2', c2_mean, c2_dev)
-    c3 = cafeteria('c3', c3_mean, c3_dev)
+    trialResults = []
     for trial in range (t):
+        # Instantiate cafeteria objects
+        c1 = cafeteria('c1', c1_mean, c1_dev)
+        c2 = cafeteria('c2', c2_mean, c2_dev)
+        c3 = cafeteria('c3', c3_mean, c3_dev)
         for days in range(100):
+            #generate happiness
             c1.generateHappiness()
             c2.generateHappiness()
             c3.generateHappiness()
-    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
+        #append the result for 1 trial to the list
+        trialResults.append((c1.getHappiness()+c2.getHappiness()+c3.getHappiness()))
+    #return the sum of the list divided by the number of trials
+    return sum(trialResults)/t
 
 #return the total happiness for exploitOnly for t trial(s)
 def exploitOnly(t):
-    #Instantiate cafeteria objects
-    c1 = cafeteria('c1', c1_mean, c1_dev)
-    c2 = cafeteria('c2', c2_mean, c2_dev)
-    c3 = cafeteria('c3', c3_mean, c3_dev)
+    trialResults = []
     ### t trials
     for x in range (t):
+        # Instantiate cafeteria objects
+        c1 = cafeteria('c1', c1_mean, c1_dev)
+        c2 = cafeteria('c2', c2_mean, c2_dev)
+        c3 = cafeteria('c3', c3_mean, c3_dev)
+        #generate the happiness for the first 3 days
         c1.generateHappiness()
-        #print(c1.getHappiness())
         c2.generateHappiness()
-        #print(c2.getHappiness())
         c3.generateHappiness()
-        #print(c3.getHappiness())
+        #selects the best cafeteria based on the first 3 days
         bestCafe = c1.compareHappiness(c2,c3)
-        #print(bestCafe.name)
         for days in range(297):
+            #use the same cafeteria for the rest of the 297 days
             bestCafe.generateHappiness()
-    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
+        #add the sum to the result list
+        trialResults.append((c1.getHappiness() + c2.getHappiness() + c3.getHappiness()))
+    #return the sum of the result list divided by the number of trials
+    return sum(trialResults) / t
 
 #return the total happiness for egreedy for t trial(s)
 def eGreedy(t,e):
-    # Instantiate cafeteria objects
-    c1 = cafeteria('c1', c1_mean, c1_dev)
-    c2 = cafeteria('c2', c2_mean, c2_dev)
-    c3 = cafeteria('c3', c3_mean, c3_dev)
-    cafeList = [c1,c2,c3]
+    trialResults = []
     for trials in range (t):
+        # Instantiate cafeteria objects
+        c1 = cafeteria('c1', c1_mean, c1_dev)
+        c2 = cafeteria('c2', c2_mean, c2_dev)
+        c3 = cafeteria('c3', c3_mean, c3_dev)
+        cafeList = [c1, c2, c3]
         for days in range (300):
-            r = (int)(random.random()*101)
+            #generate a random number between 0 and 100
+            r = (int)(random.random()*100)
+            #random selection of cafeteria
             if r < e:
                 randCafe = cafeList[(int)(random.random()*3)]
                 randCafe.generateHappiness()
             else:
+            #selection based on the average happiness of the cafeteria that the agent have experienced
                 bestCafe = c1.compareHappiness(c2,c3)
-                #print(c1.getHappiness())
-                #print(c2.getHappiness())
-                #print(c3.getHappiness())
-                #print(bestCafe.name)
                 bestCafe.generateHappiness()
-    return (c1.getHappiness()+c2.getHappiness()+c3.getHappiness())/t
+        #add the total happiness of the trial to the result list
+        trialResults.append((c1.getHappiness() + c2.getHappiness() + c3.getHappiness()))
+    #return the average of the results
+    return sum(trialResults) / t
 
 def simulate(t,ePercent):
     #e set the e value
