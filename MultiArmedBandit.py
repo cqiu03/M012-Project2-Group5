@@ -32,8 +32,8 @@ class Cafeteria():
 # define the basic characteristic of each cafeteria
 # c1 should always be the cafeteria with the lowest mean
 # c3 should always be the cafeteria with the highest mean
-c1_mean, c1_dev = 7, 5
-c2_mean, c2_dev = 9, 3
+c1_mean, c1_dev = 9, 3
+c2_mean, c2_dev = 7, 5
 c3_mean, c3_dev = 11, 7
 
 # return the total happiness for exploreOnly for 1 trial
@@ -136,7 +136,7 @@ def simulate(t,ePercent):
     print("Average Total Regret: " + (str)(optimumHappiness - greedyResult))
 
 # simulate(p1,p2) runs the simulation p1 number of times with the e value of p2
-simulate(1000,11)
+simulate(1000,12)
 
 
 
