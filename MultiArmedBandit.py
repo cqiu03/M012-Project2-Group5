@@ -68,7 +68,7 @@ def exploitOnly():
         # add the the happiness of this trial
         return (c1.getHappiness() + c2.getHappiness() + c3.getHappiness())
 
-# return the total happiness for egreedy for t trial(s)
+# return the total happiness for egreedy for 1 trial(s)
 def eGreedy(e):
     # Instantiate cafeteria objects
     c1 = Cafeteria('c1', c1_mean, c1_dev)
@@ -80,7 +80,7 @@ def eGreedy(e):
     c2.generateHappiness()
     c3.generateHappiness()
     for days in range (297):
-        # generate a random number between 0 and 100
+        # generate a random number between 0 and 1
         r = random.random()
         # random selection of cafeteria
         if r < e:
